@@ -13,6 +13,7 @@ public class Table {
 
         public static String Email = "UserEmail";
         public static String Password = "UserPassword";
+        public static String LoginType = "LoginType";
     }
 
 }
