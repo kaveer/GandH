@@ -4,14 +4,12 @@ package com.kavsoftware.kaveer.gandh.Model;
  * Created by kaveer on 1/6/2018.
  */
 
-public class AccountViewModel {
+public class AccountViewModel extends StatusCodeViewModel {
     private int UserId;
     private String Username;
     private String Email;
     private String Password;
     private boolean IsActive;
-    private int LoginType;
-    private  boolean IsReactivated;
 
     public int getUserId() {
         return UserId;
@@ -53,19 +51,4 @@ public class AccountViewModel {
         IsActive = active;
     }
 
-    public int getLoginType() {
-        return LoginType;
-    }
-
-    public void setLoginType(int loginType) {
-        LoginType = loginType;
-    }
-
-    public boolean isReactivated() {
-        return IsReactivated;
-    }
-
-    public void setReactivated(boolean reactivated) {
-        IsReactivated = reactivated;
-    }
 }

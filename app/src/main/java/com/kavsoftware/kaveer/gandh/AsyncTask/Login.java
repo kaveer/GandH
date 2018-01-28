@@ -5,6 +5,9 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.kavsoftware.kaveer.gandh.Model.AccountViewModel;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -45,11 +48,13 @@ public class Login extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         String result = null;
+        AccountViewModel account;
+        Gson gson;
+
         try {
             URL url = new URL(params[0]);
             String email = params[1];
             String password = params[2];
-            String loginType = params[3];
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
@@ -60,7 +65,6 @@ public class Login extends AsyncTask<String, String, String> {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("email", email);
             jsonObject.put("password", password);
-            jsonObject.put("logintype", loginType);
 
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             wr.writeBytes(jsonObject.toString());
@@ -74,15 +78,43 @@ public class Login extends AsyncTask<String, String, String> {
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();
 
+
                 String line ="";
                 while ((line = reader.readLine()) != null){
                     buffer.append(line);
                 }
                 String  jsonObjectHome = buffer.toString();
                 result = jsonObjectHome;
-            }else {
-                return result;
             }
+
+            if (statusCode == 400){
+                account = new AccountViewModel();
+                account.setStatusCode(statusCode);
+                account.setMessage("bad request");
+
+                gson = new Gson();
+                result = gson.toJson(account);
+            }
+
+            if (statusCode == 404){
+                account = new AccountViewModel();
+                account.setStatusCode(statusCode);
+                account.setMessage("User not found please sign up");
+
+                gson = new Gson();
+                result = gson.toJson(account);
+            }
+
+            if (statusCode == 500){
+                account = new AccountViewModel();
+                account.setStatusCode(statusCode);
+                account.setMessage("Internal server error");
+
+                gson = new Gson();
+                result = gson.toJson(account);
+            }
+
+
 
         } catch (Exception e) {
             Log.e("MainActivity", e.getMessage(), e);

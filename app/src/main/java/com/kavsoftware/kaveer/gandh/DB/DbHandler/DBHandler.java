@@ -60,7 +60,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
             result.setEmail(cursor.getString(0));
             result.setPassword(cursor.getString(1));
-            result.setLoginType(Integer.parseInt(cursor.getString(2)));
+          //  result.setLoginType(Integer.parseInt(cursor.getString(2)));
 
         }
         db.close();
@@ -74,11 +74,17 @@ public class DBHandler extends SQLiteOpenHelper {
 
         values.put(Table.User.Email, item.getEmail());
         values.put(Table.User.Password, item.getPassword());
-        values.put(Table.User.LoginType, item.getLoginType());
+      //  values.put(Table.User.LoginType, item.getLoginType());
 
         db.insert(Table.User.tableName, null , values);
         db.close();
     }
 
-    //delete
+    public void DeleteUser() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(Table.User.tableName, null, null);
+        db.close();
+    }
+
+
 }

@@ -1,5 +1,8 @@
 package com.kavsoftware.kaveer.gandh.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -13,11 +16,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.kavsoftware.kaveer.gandh.Model.TokenViewModel;
 import com.kavsoftware.kaveer.gandh.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    TokenViewModel token = new TokenViewModel();
+    SharedPreferences sharedpreferences;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +49,41 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        token = GetTokenFromSession();
+        if (token == null){
+            Logout();
+            NavigateToAccountActivity();
+        }
+        else {
+//            check if token valid
+//            load user data
+        }
+       
+    }
+
+    private void NavigateToAccountActivity() {
+        Intent main = new Intent(MainActivity.this, AccountActivity.class);
+        startActivity(main);
+    }
+
+    private void Logout() {
+        sharedpreferences = getSharedPreferences(AccountActivity.tokenSession, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+    private TokenViewModel GetTokenFromSession() {
+        TokenViewModel result = new TokenViewModel();
+       
+        sharedpreferences = getSharedPreferences(AccountActivity.tokenSession, Context.MODE_PRIVATE);
+        result.setToken(sharedpreferences.getString(AccountActivity.tokenKey.toString(), ""));
+
+        if (result.getToken() == "")
+            return null;
+        
+        return result;
     }
 
     @Override

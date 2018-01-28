@@ -6,10 +6,13 @@ package com.kavsoftware.kaveer.gandh.Configuration;
 
 public class AppConfig {
     private String LoginEndPoint = "http://kaveer.ddns.net:9292/v1/account/login" ;
+    private String TokenEndPoint = "http://kaveer.ddns.net:9292/v1/access/token" ;
 
     public String getLoginEndPoint() {
         return LoginEndPoint;
     }
 
-
+    public String getTokenEndPoint() {
+        return TokenEndPoint;
+    }
 }

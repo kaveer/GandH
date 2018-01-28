@@ -4,7 +4,7 @@ package com.kavsoftware.kaveer.gandh.Model;
  * Created by kaveer on 1/8/2018.
  */
 
-public class TokenViewModel {
+public class TokenViewModel extends StatusCodeViewModel{
     private String Token;
 
     public String getToken() {
