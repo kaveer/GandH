@@ -18,6 +18,7 @@ import com.kavsoftware.kaveer.gandh.Activity.MainActivity;
 import com.kavsoftware.kaveer.gandh.AsyncTask.Login;
 import com.kavsoftware.kaveer.gandh.AsyncTask.Token;
 import com.kavsoftware.kaveer.gandh.Configuration.AppConfig;
+import com.kavsoftware.kaveer.gandh.Configuration.PasswordEncrypt;
 import com.kavsoftware.kaveer.gandh.Model.AccountViewModel;
 import com.kavsoftware.kaveer.gandh.Model.TokenViewModel;
 import com.kavsoftware.kaveer.gandh.R;
@@ -37,6 +38,7 @@ public class LoginFragment extends Fragment {
     EditText email, password;
     Button login, signUp;
     AppConfig config = new AppConfig();
+    PasswordEncrypt passwordEncrypt = new PasswordEncrypt();
 
     public LoginFragment() {
         // Required empty public constructor
@@ -75,6 +77,16 @@ public class LoginFragment extends Fragment {
                 }
             });
 
+            signUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SignupFragment fragment = new SignupFragment();
+                    android.support.v4.app.FragmentTransaction fmTransaction = getFragmentManager().beginTransaction();
+                    fmTransaction.replace(R.id.MainFrameLayout, fragment);
+                    fmTransaction.commit();
+                }
+            });
+
         }catch (Exception ex){
             String v = ex.getMessage();
         }
@@ -87,8 +99,7 @@ public class LoginFragment extends Fragment {
         AccountViewModel result;
 
         try {
-
-            String item = new Login(activity).execute(config.getLoginEndPoint(), email.getText().toString(), password.getText().toString()).get();
+            String item = new Login(activity).execute(config.getLoginEndPoint(), email.getText().toString(), passwordEncrypt.Encrypt(password.getText().toString())).get();
             if (item != null){
                 result = DeserializeAccountViewModel(item);
                 return  result;

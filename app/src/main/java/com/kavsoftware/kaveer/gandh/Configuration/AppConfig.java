@@ -7,9 +7,14 @@ package com.kavsoftware.kaveer.gandh.Configuration;
 public class AppConfig {
     private String LoginEndPoint = "http://kaveer.ddns.net:9292/v1/account/login" ;
     private String TokenEndPoint = "http://kaveer.ddns.net:9292/v1/access/token" ;
+    private String SignUpEndPoint = "http://kaveer.ddns.net:9292/v1/account/signup" ;
 
     public String getLoginEndPoint() {
         return LoginEndPoint;
+    }
+
+    public String getSignUpEndPoint() {
+        return SignUpEndPoint;
     }
 
     public String getTokenEndPoint() {
