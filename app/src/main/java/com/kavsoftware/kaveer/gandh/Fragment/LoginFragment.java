@@ -202,7 +202,7 @@ public class LoginFragment extends Fragment {
             result.setMessage(jsonResult.getString("Message"));
 
             if (result.getStatusCode() == 200) {
-                result.setToken(jsonResult.getString("Token"));
+                result.setToken(jsonResult.getString("token"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

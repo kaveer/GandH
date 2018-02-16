@@ -15,15 +15,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.kavsoftware.kaveer.gandh.AsyncTask.ValidToken;
+import com.kavsoftware.kaveer.gandh.Configuration.AppConfig;
+import com.kavsoftware.kaveer.gandh.Model.AccountViewModel;
 import com.kavsoftware.kaveer.gandh.Model.TokenViewModel;
 import com.kavsoftware.kaveer.gandh.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TokenViewModel token = new TokenViewModel();
     SharedPreferences sharedpreferences;
+    AppConfig config = new AppConfig();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +66,56 @@ public class MainActivity extends AppCompatActivity
             NavigateToAccountActivity();
         }
         else {
-//            check if token valid
-//            load user data
+            String userDetailsJson = GetUserDetailsFromToken(token.getToken(), MainActivity.this);
+            AccountViewModel userDetails = DeserializeUserDetails(userDetailsJson);
+            if (userDetails.getStatusCode() == 200){
+
+            }
+            else {
+                Toast messageBox = Toast.makeText(MainActivity.this , userDetails.getMessage() , Toast.LENGTH_LONG);
+                messageBox.show();
+
+                Logout();
+                NavigateToAccountActivity();
+            }
         }
        
+    }
+
+    private AccountViewModel DeserializeUserDetails(String userDetailsJson) {
+        AccountViewModel result = new AccountViewModel();
+
+        JSONObject jsonResult = null;
+        try {
+            jsonResult = new JSONObject(userDetailsJson);
+            result.setStatusCode(jsonResult.getInt("StatusCode"));
+            result.setMessage(jsonResult.getString("Message"));
+
+            if (result.getStatusCode() == 200) {
+                result.setUserId(jsonResult.getInt("userid"));
+                result.setUsername(jsonResult.getString("user"));
+                result.setEmail(jsonResult.getString("email"));
+                result.setPassword(jsonResult.getString("password"));
+                result.setActive(jsonResult.getBoolean("isactive"));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return  result;
+    }
+
+    private String GetUserDetailsFromToken(String token, MainActivity activity) {
+        String result = null;
+        try {
+            result = new ValidToken(activity).execute(config.getValidTokenEndPoint(), token).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private void NavigateToAccountActivity() {
